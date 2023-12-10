@@ -1,0 +1,49 @@
+version: '3.6'
+services:
+  gitlab:
+    image: gitlab/gitlab-ee:latest
+    restart: always
+    container_name: gitlab-web
+    hostname: ${HOSTNAME}
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url '#{EXTERNAL_URL}#'
+        gitlab_rails['gitlab_shell_ssh_port'] = 22
+        gitlab_rails['initial_root_password'] = '#{ROOT_PASSWORD}#'
+        gitlab_rails['store_initial_root_password'] = true        
+        registry_external_url '#{EXTERNAL_URL}#:5050'
+        gitlab_rails['registry_enabled'] = true
+    ports:
+      - '443:443'
+      - '2222:22'
+      - '5050:5050'
+    networks:
+      - gitlab
+    volumes:
+      - ./gitlab/volumes/config:/etc/gitlab
+      - ./gitlab/volumes/logs:/var/log/gitlab
+      - ./gitlab/volumes/data:/var/opt/gitlab
+    shm_size: '1gb'
+  runner:
+    image: ${RUNNER_IMAGE}:${RUNNER_IMAGE_TAG}
+    build: ./runner
+    deploy:
+      mode: replicated
+      replicas: 2
+    environment:
+      GITLAB_URL: '#{EXTERNAL_URL}#'
+      GIT_SSL_NO_VERIFY: "true"
+    restart: 'always'
+    networks:
+      - gitlab
+    volumes:
+      - ./runner/volumes/config:/etc/gitlab-runner
+      - /var/run/docker.sock:/var/run/docker.sock
+    stdin_open: true
+    tty: true
+    depends_on:
+      gitlab:
+        condition: service_healthy
+    command: ["gitlab-runner", "run", "--user=root"]
+networks:
+  gitlab:
