@@ -10,14 +10,14 @@ DOCKER_VERSION=docker:24.0.6
 # no registration token provided, setting up script for unregistering runners
 if [[ $1 == "unregister" ]]; then 
   echo "Unregistering all runners"
-  runner=$(docker ps | grep gitlab_prod_runner | awk 'NR==1{print $1}')
+  runner=$(docker ps | grep base_runner | awk 'NR==1{print $1}')
   docker exec $runner gitlab-runner unregister --all-runners
   exit 0
 fi 
 
 # arguments provided for token and runner type; registering runner 
-BASE_RUNNERS=$(docker ps | grep runner | awk ' { print $1 } ')
-DOCKER_RUNNERS=$(docker ps | grep gitlab_prod_docker_runner | awk ' { print $1 } ')
+BASE_RUNNERS=$(docker ps | grep base_runner | awk ' { print $1 } ')
+DOCKER_RUNNERS=$(docker ps | grep docker_runner | awk ' { print $1 } ')
 
 case "$1" in
   "base")
@@ -54,8 +54,8 @@ case "$1" in
         --run-untagged="true" \
         --locked="false" \
         --access-level="not_protected" \
-        --docker-privileged \
-        --tls-ca-file /etc/gitlab-runner/certs/gitlab.domain.local.crt
+        --tls-ca-file /etc/gitlab-runner/certs/gitlab.${DOMAIN%.local}.local.crt \
+        # --docker-privileged \ # removing for kaniko
     done
     ;;
   *)

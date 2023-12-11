@@ -29,7 +29,7 @@ create_server_certs:
 
 rebuild_images:
 	@echo '** rebuilding images **'
-	docker-compose --env-file ./.env build runner
+	docker-compose --env-file ./.env build base_runner
 
 compose_up:
 	@echo '** starting containers **'
