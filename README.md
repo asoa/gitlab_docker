@@ -37,7 +37,7 @@ Development environment comprised of a docker composed gitlab deployment with do
 - [x] Add packer and terraform builders and plugins to gitlab runner
 - [ ] Move certificate authority creation logic from scripts to ca container and share via docker volume
 - [x] Remove all secrets from variables.tf and use environment variables substitution, vault api, or gitlab secret variables
-- [ ] Add kaniko builder to runner and remove privileged mode from
+- [ ] Add kaniko builder to runner and remove privileged mode
 
 
 
