@@ -4,8 +4,8 @@ include .env
 export
 
 create_dirs:
-	@creating directory structure main
-	./scripts/00_create_dirs.sh
+	@echo "** creating directory structure **"
+	./scripts/00-make-dirs.sh
 
 clean_dir:
 	@echo '** cleaning web dir **'
