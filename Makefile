@@ -1,4 +1,4 @@
-.PHONY: make_ca_certs create_dirs clean_dir create_ca_certs create_server_certs compose_up main
+.PHONY: make_ca_certs create_dirs clean_dir create_ca_certs create_server_certs up down main
 
 include .env
 export
@@ -31,19 +31,20 @@ rebuild_images:
 	@echo '** rebuilding images **'
 	docker-compose --env-file ./.env build base_runner
 
-compose_up:
+up:
 	@echo '** starting containers **'
-	# ./scripts/sed_helper.sh
 	cp docker-compose.yml docker-compose.yml.bak
-	sed -i 's/#{EXTERNAL_URL}#/'https:\\/\\/"$$EXTERNAL_URL"'/g' docker-compose.yml
-	sed -i 's/#{ROOT_PASSWORD}#/'"$$ROOT_PASSWORD"'/g' docker-compose.yml
+	./scripts/sed_helper.sh
+	# sed -i 's/#{EXTERNAL_URL}#/'https:\\/\\/"$$EXTERNAL_URL"'/g' docker-compose.yml
+	# sed -i 's/#{ROOT_PASSWORD}#/'"$$ROOT_PASSWORD"'/g' docker-compose.yml
 	docker-compose --env-file ./.env up -d
 	mv docker-compose.yml.bak docker-compose.yml
 
-compose_down:
+down:
 	@echo '** stopping containers **'
 	docker-compose down -v
+	docker ps -aq | xargs docker rm -v
 
-main: rebuild_images clean_dir create_ca_certs create_server_certs compose_up
+main: rebuild_images clean_dir create_ca_certs create_server_certs up
 
 	
