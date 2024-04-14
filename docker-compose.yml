@@ -7,11 +7,11 @@ services:
     hostname: ${HOSTNAME}
     environment:
       GITLAB_OMNIBUS_CONFIG: |
-        external_url '#{EXTERNAL_URL}#'
+        external_url 'https://${EXTERNAL_URL}'
         gitlab_rails['gitlab_shell_ssh_port'] = 22
-        gitlab_rails['initial_root_password'] = '#{ROOT_PASSWORD}#'
+        gitlab_rails['initial_root_password'] = '${ROOT_PASSWORD}'
         gitlab_rails['store_initial_root_password'] = true        
-        registry_external_url '#{EXTERNAL_URL}#:5050'
+        registry_external_url 'https://${EXTERNAL_URL}:5050'
         gitlab_rails['registry_enabled'] = true
     ports:
       - '443:443'
@@ -31,7 +31,7 @@ services:
       mode: replicated
       replicas: 1
     environment:
-      GITLAB_URL: '#{EXTERNAL_URL}#'
+      GITLAB_URL: 'https://${EXTERNAL_URL}'
       GIT_SSL_NO_VERIFY: "true"
     restart: 'always'
     networks:
@@ -44,7 +44,6 @@ services:
     depends_on:
       gitlab:
         condition: service_healthy
-        restart: true
     command: ["gitlab-runner", "run", "--user=root"]
   docker_runner:
     image: gitlab/gitlab-runner:alpine
@@ -53,7 +52,7 @@ services:
       mode: replicated
       replicas: 1
     environment:
-      GITLAB_URL: '#{EXTERNAL_URL}#'
+      GITLAB_URL: 'https://${EXTERNAL_URL}'
       GIT_SSL_NO_VERIFY: "true"
     restart: 'always'
     networks:
@@ -66,6 +65,5 @@ services:
     depends_on:
       gitlab:
         condition: service_healthy
-        restart: true
 networks:
   gitlab:

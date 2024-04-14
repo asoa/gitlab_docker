@@ -33,12 +33,7 @@ rebuild_images:
 
 up:
 	@echo '** starting containers **'
-	cp docker-compose.yml docker-compose.yml.bak
-	./scripts/sed_helper.sh
-	# sed -i 's/#{EXTERNAL_URL}#/'https:\\/\\/"$$EXTERNAL_URL"'/g' docker-compose.yml
-	# sed -i 's/#{ROOT_PASSWORD}#/'"$$ROOT_PASSWORD"'/g' docker-compose.yml
 	docker-compose --env-file ./.env up -d
-	mv docker-compose.yml.bak docker-compose.yml
 
 down:
 	@echo '** stopping containers **'

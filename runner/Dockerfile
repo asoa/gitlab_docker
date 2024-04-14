@@ -55,7 +55,11 @@ RUN mkdir -p /opt/packer-init && \
     
 # https://learn.microsoft.com/en-us/powershell/scripting/install/install-ubuntu?view=powershell-7.3
 RUN apt-get update && \
+<<<<<<< HEAD
     apt-get install -y wget apt-transport-https software-properties-common && \
+=======
+    apt-get install -y curl apt-transport-https software-properties-common && \
+>>>>>>> 8a37ae0 (updated docker-compose)
     curl -sSfLO https://packages.microsoft.com/config/ubuntu/${DISTRO_VERSION}/packages-microsoft-prod.deb && \
     dpkg -i packages-microsoft-prod.deb && \
     rm packages-microsoft-prod.deb && \
@@ -80,3 +84,11 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+=======
+# install jq
+ARG JQ_VERSION=1.7.1
+RUN apt-get update && \
+    apt-get install -y curl && \
+    curl -SfLO https://github.com/jqlang/jq/releases/download/jq-${JQ_VERSION}/jq-linux-amd64 && \
+    chmod +x jq-linux-amd64 && \
+    mv jq-linux-amd64 /usr/local/bin/jq
