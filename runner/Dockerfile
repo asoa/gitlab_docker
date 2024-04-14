@@ -55,11 +55,7 @@ RUN mkdir -p /opt/packer-init && \
     
 # https://learn.microsoft.com/en-us/powershell/scripting/install/install-ubuntu?view=powershell-7.3
 RUN apt-get update && \
-<<<<<<< HEAD
-    apt-get install -y wget apt-transport-https software-properties-common && \
-=======
     apt-get install -y curl apt-transport-https software-properties-common && \
->>>>>>> 8a37ae0 (updated docker-compose)
     curl -sSfLO https://packages.microsoft.com/config/ubuntu/${DISTRO_VERSION}/packages-microsoft-prod.deb && \
     dpkg -i packages-microsoft-prod.deb && \
     rm packages-microsoft-prod.deb && \
