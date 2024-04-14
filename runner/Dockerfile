@@ -84,7 +84,6 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-=======
 # install jq
 ARG JQ_VERSION=1.7.1
 RUN apt-get update && \
