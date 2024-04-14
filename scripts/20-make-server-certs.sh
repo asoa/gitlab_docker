@@ -5,7 +5,7 @@ source .env
 domain=$DOMAIN
 localCertDir="./certificates"
 fqdn=$EXTERNAL_URL
-
+ip_address=$IP_ADDRESS
 
 #Create the server certificates
 for server in "gitlab"
@@ -17,8 +17,12 @@ do
     #create the CSR
     openssl req -new -sha256 -nodes -key $localCertDir/$fqdn.key -subj "/C=US/ST=WA/L=EN/O=Domain Local/CN=$fqdn" -out $localCertDir/$fqdn.csr
 
+    echo "[ san ]" > $localCertDir/san.conf
+    echo "subjectAltName=DNS:$fqdn,IP:$ip_address" >> $localCertDir/san.conf
+
     #Generate the cert from the CSR and sign it with the CA's root key
-    openssl x509 -req -extfile <(printf "subjectAltName=DNS:$fqdn") -in $localCertDir/$fqdn.csr -CA $localCertDir/$domain.crt -CAkey $localCertDir/$domain.key -CAcreateserial -out $localCertDir/$fqdn.crt -days 365 -sha256
+    openssl x509 -req -extfile $localCertDir/san.conf -in $localCertDir/$fqdn.csr -CA $localCertDir/$domain.crt \
+        -CAkey $localCertDir/$domain.key -CAcreateserial -out $localCertDir/$fqdn.crt -days 365 -sha256 -extensions san
     
     #Verify the cert
     openssl x509 -in $localCertDir/$fqdn.crt -text -noout

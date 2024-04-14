@@ -8,6 +8,29 @@ ARG POWERSHELL_VERSION=7.3.7
 ARG DISTRO=jammy
 ARG DISTRO_VERSION=22.04
 
+# https://gitlab.com/gitlab-org/gitlab-runner/-/blob/main/dockerfiles/runner/ubuntu/Dockerfile
+RUN apt-get update -y && \
+    apt-get install -y --no-install-recommends \
+        apt-transport-https \
+        ca-certificates \
+        curl \
+        git git-lfs \
+        wget \
+        tzdata \
+        openssh-client \
+        apt-transport-https \
+        lsb-release \
+        gnupg \
+        unzip \
+        git \
+    && rm -rf /var/lib/apt/lists/*
+
+# install gitlab runner
+RUN curl -L https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-linux-amd64 -o /usr/local/bin/gitlab-runner && \
+    chmod +x /usr/local/bin/gitlab-runner && \
+    groupadd -g 1001 gitlab-runner && \
+    useradd -g 1001 -u 1001 -m gitlab-runner -s /bin/bash 
+
 # install azure cli
 # https://learn.microsoft.com/en-us/cli/azure/install-azure-cli-linux?pivots=apt#install-specific-version
 RUN apt-get update && \
@@ -21,15 +44,7 @@ RUN apt-get update && \
     apt-get update && \
     apt-get install -y azure-cli=${AZURE_CLI_VERSION}-1~${DISTRO}
 
-# install gitlab runner
-RUN apt-get install -y curl && \
-    curl -L https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-linux-amd64 -o /usr/local/bin/gitlab-runner && \
-    chmod +x /usr/local/bin/gitlab-runner && \
-    # clean apt directories
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
-# install terraform and packer
+# install terraform and packer https://developer.hashicorp.com/terraform/install
 RUN curl -L https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip -o terraform.zip && \
     unzip terraform.zip -d /usr/local/bin && \
     rm terraform.zip && \
@@ -80,6 +95,11 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+# https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/
+RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && \
+    install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl && \
+    rm kubectl
+
 # install jq
 ARG JQ_VERSION=1.7.1
 RUN apt-get update && \
@@ -87,3 +107,7 @@ RUN apt-get update && \
     curl -SfLO https://github.com/jqlang/jq/releases/download/jq-${JQ_VERSION}/jq-linux-amd64 && \
     chmod +x jq-linux-amd64 && \
     mv jq-linux-amd64 /usr/local/bin/jq
+
+USER gitlab-runner
+    
+CMD [ "gitlab-runner", "run", "--user=gitlab-runner", "--working-directory=/home/gitlab-runner"]

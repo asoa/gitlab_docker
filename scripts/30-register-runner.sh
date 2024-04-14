@@ -5,7 +5,7 @@ source .env
 
 GITLAB_URL="https://$EXTERNAL_URL"
 DOCKER_NETWORK=$(docker network ls | grep gitlab | awk 'NR==1{print $2}')
-DOCKER_VERSION=docker:24.0.6
+DOCKER_VERSION=docker:latest
 
 # no registration token provided, setting up script for unregistering runners
 if [[ $1 == "unregister" ]]; then 
