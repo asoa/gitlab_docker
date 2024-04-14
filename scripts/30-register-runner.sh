@@ -55,7 +55,6 @@ case "$1" in
         --locked="false" \
         --access-level="not_protected" \
         --tls-ca-file /etc/gitlab-runner/certs/gitlab.${DOMAIN%.local}.local.crt \
-        # --docker-privileged \ # removing for kaniko
     done
     ;;
   *)
