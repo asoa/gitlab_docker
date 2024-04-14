@@ -54,12 +54,12 @@ case "$1" in
         --run-untagged="true" \
         --locked="false" \
         --access-level="not_protected" \
-        --tls-ca-file /etc/gitlab-runner/certs/gitlab.${DOMAIN%.local}.local.crt \
+        --tls-ca-file /etc/gitlab-runner/certs/gitlab.${DOMAIN%.local}.local.crt 
     done
     ;;
   *)
     echo "Usage: export REGISTRATION_TOKEN=<registration_token>"
     echo "Usage: ./script <base | docker>"
     echo "Usage: ./script unregister"
-
+    ;;
 esac
