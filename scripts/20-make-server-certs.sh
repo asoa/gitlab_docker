@@ -34,6 +34,8 @@ do
     if [[ $server == "gitlab" ]]; then
         mkdir -p ./$server/volumes/config/ssl; cp $localCertDir/$fqdn* ./$server/volumes/config/ssl/
     fi
+    # change permission on gitlab public cert
+    chmod 644 $localCertDir/$fqdn.crt
 done
 
 # move the gitlab .crt to runner certs directory

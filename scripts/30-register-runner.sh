@@ -35,7 +35,7 @@ case "$1" in
         --run-untagged="true" \
         --locked="false" \
         --access-level="not_protected" \
-        --tls-ca-file "/etc/gitlab-runner/certs/gitlab.${DOMAIN%.local}.local.crt"
+        --tls-ca-file "/etc/gitlab-runner/certs/gitlab.${DOMAIN%.local}.local.crt" \
     done
     ;;
   "docker")

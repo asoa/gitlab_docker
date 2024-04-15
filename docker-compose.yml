@@ -24,26 +24,6 @@ services:
       - ./gitlab/volumes/logs:/var/log/gitlab
       - ./gitlab/volumes/data:/var/opt/gitlab
     shm_size: '1gb'
-  base_runner:
-    image: ${RUNNER_IMAGE}:${RUNNER_IMAGE_TAG}
-    deploy:
-      mode: replicated
-      replicas: 2
-    environment:
-      GITLAB_URL: 'https://${EXTERNAL_URL}'
-      GIT_SSL_NO_VERIFY: "true"
-    restart: 'always'
-    networks:
-      - gitlab
-    volumes:
-      - ./runner/volumes/config:/etc/gitlab-runner
-      - /var/run/docker.sock:/var/run/docker.sock
-    depends_on:
-      gitlab:
-        condition: service_healthy
-    tty: true
-    stdin_open: true
-    command: ["bash"]
   docker_runner:
     image: gitlab/gitlab-runner:latest
     deploy:

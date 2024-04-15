@@ -107,7 +107,3 @@ RUN apt-get update && \
     curl -SfLO https://github.com/jqlang/jq/releases/download/jq-${JQ_VERSION}/jq-linux-amd64 && \
     chmod +x jq-linux-amd64 && \
     mv jq-linux-amd64 /usr/local/bin/jq
-
-USER gitlab-runner
-    
-CMD [ "gitlab-runner", "run", "--user=gitlab-runner", "--working-directory=/home/gitlab-runner"]
